@@ -1,33 +1,58 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { EmptyState } from './EmptyState';
 
 export const ExpenseTable = memo(function ExpenseTable({
-  expenses,
-  isFiltered,
+  expenses = [],
   onEdit,
   onDelete,
-  onClearFilters
+  isMonthlyView = false,
+  onToggleMonthlyView
 }) {
-  // Compute totals for current visible rows in tfoot
-  const visibleTotals = expenses.reduce(
-    (acc, item) => {
-      const val = Number(item.amount) || 0;
-      if (item.type === 'income') {
-        acc.totalIncome += val;
-      } else {
-        acc.totalExpenses += val;
-      }
-      return acc;
-    },
-    { totalIncome: 0, totalExpenses: 0 }
-  );
+  // Compute sums for currently visible rows only
+  const visibleTotals = useMemo(() => {
+    return expenses.reduce(
+      (acc, item) => {
+        const val = Number(item.amount) || 0;
+        if (item.type === 'income') {
+          acc.totalIncome += val;
+        } else {
+          acc.totalExpenses += val;
+        }
+        return acc;
+      },
+      { totalIncome: 0, totalExpenses: 0 }
+    );
+  }, [expenses]);
 
   const visibleNet = visibleTotals.totalIncome - visibleTotals.totalExpenses;
 
+  // Bonus ⭐: Monthly view grouping calculation
+  const monthlyData = useMemo(() => {
+    if (!isMonthlyView) return [];
+
+    const monthsMap = {};
+    expenses.forEach((item) => {
+      if (!item.date) return;
+      const monthKey = item.date.slice(0, 7); // YYYY-MM
+      if (!monthsMap[monthKey]) {
+        monthsMap[monthKey] = { monthKey, income: 0, expense: 0, count: 0 };
+      }
+      const val = Number(item.amount) || 0;
+      if (item.type === 'income') {
+        monthsMap[monthKey].income += val;
+      } else {
+        monthsMap[monthKey].expense += val;
+      }
+      monthsMap[monthKey].count += 1;
+    });
+
+    return Object.values(monthsMap).sort((a, b) => b.monthKey.localeCompare(a.monthKey));
+  }, [expenses, isMonthlyView]);
+
   const handleDelete = (id, description) => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete "${description || 'this item'}"?`
+      `Are you sure you want to delete "${description || 'this transaction'}"?`
     );
     if (confirmed) {
       onDelete(id);
@@ -37,31 +62,72 @@ export const ExpenseTable = memo(function ExpenseTable({
   return (
     <div className="card-container table-card">
       <div className="table-header">
-        <h2>Transactions History</h2>
-        <span className="row-count-badge">
-          Showing {expenses.length} transaction{expenses.length === 1 ? '' : 's'}
-        </span>
+        <div className="table-header-titles">
+          <h2>{isMonthlyView ? 'Monthly Expense Summary' : 'Transactions History'}</h2>
+          <span className="row-count-badge">
+            {isMonthlyView
+              ? `${monthlyData.length} Month${monthlyData.length === 1 ? '' : 's'}`
+              : `${expenses.length} Transaction${expenses.length === 1 ? '' : 's'}`}
+          </span>
+        </div>
+
+        {onToggleMonthlyView && (
+          <button
+            type="button"
+            className="btn btn-secondary view-toggle-btn"
+            onClick={onToggleMonthlyView}
+          >
+            {isMonthlyView ? '📋 Show Detailed List' : '📅 Monthly Summary View'}
+          </button>
+        )}
       </div>
 
       <div className="table-responsive">
         <table className="expense-table">
           <thead>
-            <tr>
-              <th>Date</th>
-              <th>Description</th>
-              <th>Category</th>
-              <th className="text-right">Amount</th>
-              <th className="text-center">Actions</th>
-            </tr>
+            {isMonthlyView ? (
+              <tr>
+                <th>Month</th>
+                <th>Total Income</th>
+                <th>Total Expense</th>
+                <th className="text-right">Net Savings</th>
+                <th className="text-center">Count</th>
+              </tr>
+            ) : (
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th className="text-right">Amount</th>
+                <th className="text-center">Actions</th>
+              </tr>
+            )}
           </thead>
 
           <tbody>
             {expenses.length === 0 ? (
               <tr>
                 <td colSpan="5">
-                  <EmptyState isFiltered={isFiltered} onClearFilters={onClearFilters} />
+                  <EmptyState message="No expenses found matching the current filters." />
                 </td>
               </tr>
+            ) : isMonthlyView ? (
+              monthlyData.map((row) => {
+                const net = row.income - row.expense;
+                return (
+                  <tr key={row.monthKey} data-type={net >= 0 ? 'income' : 'expense'}>
+                    <td className="desc-cell">{row.monthKey}</td>
+                    <td className="amount-cell positive">{formatCurrency(row.income)}</td>
+                    <td className="amount-cell negative">{formatCurrency(row.expense)}</td>
+                    <td className="amount-cell text-right">
+                      <span className={`amount-value ${net >= 0 ? 'income' : 'expense'}`}>
+                        {formatCurrency(net)}
+                      </span>
+                    </td>
+                    <td className="text-center">{row.count} items</td>
+                  </tr>
+                );
+              })
             ) : (
               expenses.map((item) => (
                 <tr key={item.id} data-type={item.type}>
@@ -82,7 +148,7 @@ export const ExpenseTable = memo(function ExpenseTable({
                       type="button"
                       className="btn-icon edit-icon-btn"
                       onClick={() => onEdit(item)}
-                      title="Edit Transaction"
+                      title="Edit Expense"
                       aria-label={`Edit ${item.description}`}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -94,7 +160,7 @@ export const ExpenseTable = memo(function ExpenseTable({
                       type="button"
                       className="btn-icon delete-icon-btn"
                       onClick={() => handleDelete(item.id, item.description)}
-                      title="Delete Transaction"
+                      title="Delete Expense"
                       aria-label={`Delete ${item.description}`}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -114,7 +180,7 @@ export const ExpenseTable = memo(function ExpenseTable({
             <tfoot>
               <tr className="tfoot-row">
                 <td colSpan="3" className="tfoot-label">
-                  Visible Page Totals
+                  Filtered Visible Totals
                 </td>
                 <td colSpan="2" className="tfoot-amounts">
                   <div className="tfoot-summary-group">

@@ -2,7 +2,7 @@ import React, { memo, useMemo, useState, useEffect } from 'react';
 import { calculateCategoryTotals } from '../utils/calculations';
 import { formatCurrency } from '../utils/formatters';
 
-export const CategoryChart = memo(function CategoryChart({ expenses }) {
+export const CategoryChart = memo(function CategoryChart({ expenses = [] }) {
   const categoryTotals = useMemo(() => {
     return calculateCategoryTotals(expenses);
   }, [expenses]);
@@ -10,7 +10,7 @@ export const CategoryChart = memo(function CategoryChart({ expenses }) {
   const [animatedWidths, setAnimatedWidths] = useState({});
 
   useEffect(() => {
-    // Trigger smooth bar width animation when category totals update
+    // Animate bars from 0 to target percentage after mount / update
     const timer = setTimeout(() => {
       const newWidths = {};
       Object.keys(categoryTotals).forEach((cat) => {
@@ -28,18 +28,18 @@ export const CategoryChart = memo(function CategoryChart({ expenses }) {
     <div className="card-container chart-card">
       <div className="chart-header">
         <h2>Expense Breakdown</h2>
-        <span className="chart-subtitle">By Category</span>
+        <span className="chart-subtitle">Expense Categories Only</span>
       </div>
 
       {categories.length === 0 ? (
         <div className="chart-empty">
-          <p>No expense data available for visualization.</p>
+          <p>No expense spend recorded for visualization.</p>
         </div>
       ) : (
         <div className="chart-bars-list">
           {categories.map((cat) => {
             const { total, percentage } = categoryTotals[cat];
-            const barWidth = animatedWidths[cat] !== undefined ? animatedWidths[cat] : 0;
+            const currentWidth = animatedWidths[cat] !== undefined ? animatedWidths[cat] : 0;
 
             return (
               <div key={cat} className="chart-bar-item">
@@ -57,12 +57,12 @@ export const CategoryChart = memo(function CategoryChart({ expenses }) {
                   <div
                     className="chart-progress-fill"
                     data-category={cat}
-                    style={{ width: `${barWidth}%` }}
+                    style={{ width: `${currentWidth}%` }}
                     role="progressbar"
                     aria-valuenow={percentage}
                     aria-valuemin="0"
                     aria-valuemax="100"
-                    aria-label={`${cat} expense percentage`}
+                    aria-label={`${cat} category expense percentage`}
                   />
                 </div>
               </div>

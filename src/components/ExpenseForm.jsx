@@ -1,29 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES, deriveTransactionType } from '../hooks/useExpenses';
 
-const getTodayString = () => {
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth() + 1).padStart(2, '0');
-  const dd = String(today.getDate()).padStart(2, '0');
-  return `${yyyy}-${mm}-${dd}`;
+const getTodayDateString = () => {
+  return new Date().toISOString().slice(0, 10);
 };
 
-export function ExpenseForm({ editingExpense, onSave, onCancel }) {
+export function ExpenseForm({ onSubmit, editingExpense, onCancelEdit }) {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('Food');
-  const [date, setDate] = useState(getTodayString());
+  const [date, setDate] = useState(getTodayDateString());
 
   const [errors, setErrors] = useState({});
 
-  // Sync state when editingExpense changes
+  const isEditing = Boolean(editingExpense);
+
+  // Sync form fields when editingExpense prop changes
   useEffect(() => {
     if (editingExpense) {
       setDescription(editingExpense.description || '');
-      setAmount(editingExpense.amount ? String(editingExpense.amount) : '');
+      setAmount(editingExpense.amount !== undefined ? String(editingExpense.amount) : '');
       setCategory(editingExpense.category || 'Food');
-      setDate(editingExpense.date || getTodayString());
+      setDate(editingExpense.date || getTodayDateString());
       setErrors({});
     } else {
       resetForm();
@@ -34,7 +32,7 @@ export function ExpenseForm({ editingExpense, onSave, onCancel }) {
     setDescription('');
     setAmount('');
     setCategory('Food');
-    setDate(getTodayString());
+    setDate(getTodayDateString());
     setErrors({});
   };
 
@@ -47,7 +45,7 @@ export function ExpenseForm({ editingExpense, onSave, onCancel }) {
 
     const numAmount = Number(amount);
     if (!amount || isNaN(numAmount) || numAmount <= 0) {
-      newErrors.amount = 'Amount must be a positive number greater than 0.';
+      newErrors.amount = 'Amount must be greater than 0.';
     }
 
     if (!category) {
@@ -57,7 +55,7 @@ export function ExpenseForm({ editingExpense, onSave, onCancel }) {
     if (!date) {
       newErrors.date = 'Date is required.';
     } else {
-      const todayStr = getTodayString();
+      const todayStr = getTodayDateString();
       if (date > todayStr) {
         newErrors.date = 'Date cannot be in the future.';
       }
@@ -86,9 +84,11 @@ export function ExpenseForm({ editingExpense, onSave, onCancel }) {
 
     if (editingExpense) {
       payload.id = editingExpense.id;
+    } else {
+      payload.id = Date.now();
     }
 
-    onSave(payload, Boolean(editingExpense));
+    onSubmit(payload, isEditing);
 
     if (!editingExpense) {
       resetForm();
@@ -100,7 +100,7 @@ export function ExpenseForm({ editingExpense, onSave, onCancel }) {
   return (
     <div className="card-container form-card">
       <div className="form-header">
-        <h2>{editingExpense ? 'Edit Transaction' : 'Add New Transaction'}</h2>
+        <h2>{isEditing ? 'Edit Expense' : 'Add Expense'}</h2>
         <span className={`transaction-type-badge ${derivedType}`}>
           Type: {derivedType.toUpperCase()}
         </span>
@@ -114,14 +114,14 @@ export function ExpenseForm({ editingExpense, onSave, onCancel }) {
             id="description"
             type="text"
             className={errors.description ? 'input-error' : ''}
-            placeholder="e.g. Client Payment, Groceries, Rent"
+            placeholder="e.g. Lunch, Salary, Electricity Bill"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
           {errors.description && (
-            <p className="error-message" role="alert">
+            <span className="error-message" role="alert">
               {errors.description}
-            </p>
+            </span>
           )}
         </div>
 
@@ -139,13 +139,13 @@ export function ExpenseForm({ editingExpense, onSave, onCancel }) {
             onChange={(e) => setAmount(e.target.value)}
           />
           {errors.amount && (
-            <p className="error-message" role="alert">
+            <span className="error-message" role="alert">
               {errors.amount}
-            </p>
+            </span>
           )}
         </div>
 
-        {/* Category Field */}
+        {/* Category Select with optgroups */}
         <div className="form-group">
           <label htmlFor="category">Category</label>
           <select
@@ -170,9 +170,9 @@ export function ExpenseForm({ editingExpense, onSave, onCancel }) {
             </optgroup>
           </select>
           {errors.category && (
-            <p className="error-message" role="alert">
+            <span className="error-message" role="alert">
               {errors.category}
-            </p>
+            </span>
           )}
         </div>
 
@@ -182,30 +182,30 @@ export function ExpenseForm({ editingExpense, onSave, onCancel }) {
           <input
             id="date"
             type="date"
-            max={getTodayString()}
+            max={getTodayDateString()}
             className={errors.date ? 'input-error' : ''}
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
           {errors.date && (
-            <p className="error-message" role="alert">
+            <span className="error-message" role="alert">
               {errors.date}
-            </p>
+            </span>
           )}
         </div>
 
-        {/* Form Action Buttons */}
+        {/* Action Buttons */}
         <div className="form-actions">
           <button type="submit" className="btn btn-primary">
-            {editingExpense ? 'Update Expense' : 'Add Expense'}
+            {isEditing ? 'Update Expense' : 'Add Expense'}
           </button>
 
-          {editingExpense && (
+          {isEditing && (
             <button
               type="button"
               className="btn btn-secondary"
               onClick={() => {
-                onCancel();
+                onCancelEdit();
                 resetForm();
               }}
             >

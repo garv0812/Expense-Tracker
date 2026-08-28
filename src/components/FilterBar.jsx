@@ -1,8 +1,19 @@
 import React from 'react';
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from '../hooks/useExpenses';
 
-export function FilterBar({ filters, isFiltered, onFilterChange, onClearFilters }) {
-  const allCategories = ['All', ...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES];
+export function FilterBar({
+  filters,
+  onFilterChange,
+  onClearFilters,
+  categories
+}) {
+  const categoryOptions = categories || ['All', ...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES];
+
+  const isFilterActive =
+    filters.search !== '' ||
+    filters.category !== 'All' ||
+    filters.dateFrom !== '' ||
+    filters.dateTo !== '';
 
   return (
     <div className="card-container filter-bar">
@@ -11,9 +22,10 @@ export function FilterBar({ filters, isFiltered, onFilterChange, onClearFilters 
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
           </svg>
-          <h3>Filter Transactions</h3>
+          <h3>Filter Records</h3>
         </div>
-        {isFiltered && (
+
+        {isFilterActive && (
           <button
             type="button"
             className="btn btn-text clear-btn"
@@ -24,7 +36,7 @@ export function FilterBar({ filters, isFiltered, onFilterChange, onClearFilters 
         )}
       </div>
 
-      <div className="filter-controls">
+      <div className="filter-controls-flex">
         {/* Search Input */}
         <div className="filter-group search-group">
           <label htmlFor="filter-search">Search</label>
@@ -36,7 +48,7 @@ export function FilterBar({ filters, isFiltered, onFilterChange, onClearFilters 
             <input
               id="filter-search"
               type="text"
-              placeholder="Search by description or category..."
+              placeholder="Search description or category..."
               value={filters.search}
               onChange={(e) => onFilterChange('search', e.target.value)}
             />
@@ -51,7 +63,7 @@ export function FilterBar({ filters, isFiltered, onFilterChange, onClearFilters 
             value={filters.category}
             onChange={(e) => onFilterChange('category', e.target.value)}
           >
-            {allCategories.map((cat) => (
+            {categoryOptions.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
               </option>

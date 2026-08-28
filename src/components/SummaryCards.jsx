@@ -1,9 +1,7 @@
 import React, { memo } from 'react';
 import { formatCurrency } from '../utils/formatters';
 
-export const SummaryCards = memo(function SummaryCards({ summary }) {
-  const { totalIncome = 0, totalExpenses = 0, netBalance = 0 } = summary;
-
+export const SummaryCards = memo(function SummaryCards({ totalIncome = 0, totalExpenses = 0, netBalance = 0 }) {
   return (
     <section className="summary-grid" aria-label="Financial Summary">
       {/* Total Income Card */}

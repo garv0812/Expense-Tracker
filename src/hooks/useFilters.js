@@ -48,20 +48,10 @@ export function useFilters(expenses = []) {
     });
   }, [expenses, filters]);
 
-  const isFiltered = useMemo(() => {
-    return (
-      filters.search !== '' ||
-      filters.category !== 'All' ||
-      filters.dateFrom !== '' ||
-      filters.dateTo !== ''
-    );
-  }, [filters]);
-
   return {
     filters,
     setFilter,
     clearFilters,
-    filteredExpenses,
-    isFiltered
+    filteredExpenses
   };
 }

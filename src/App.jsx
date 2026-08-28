@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect } from 'react';
+import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import { useExpenses } from './hooks/useExpenses';
 import { useFilters } from './hooks/useFilters';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -13,22 +13,22 @@ import { CategoryChart } from './components/CategoryChart';
 
 export function App() {
   const { expenses, editingExpense, lastTransactionType, dispatch } = useExpenses();
-  const { filters, setFilter, clearFilters, filteredExpenses, isFiltered } = useFilters(expenses);
+  const { filters, setFilter, clearFilters, filteredExpenses } = useFilters(expenses);
   const [theme, setTheme] = useLocalStorage('theme', 'light');
+  const [isMonthlyView, setIsMonthlyView] = useState(false);
 
-  // Sync data-theme attribute with document element and body
+  // Sync data-theme attribute with document root & body
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     document.body.setAttribute('data-theme', theme);
   }, [theme]);
 
-
-  // Compute summary values from all expenses
+  // Compute summary values from all expenses using useMemo
   const summary = useMemo(() => {
     return calculateSummary(expenses);
   }, [expenses]);
 
-  // Memoized event handlers to prevent unnecessary re-renders of memoized children
+  // Memoized event handlers passed as props
   const handleSaveExpense = useCallback(
     (expenseData, isEdit) => {
       if (isEdit) {
@@ -62,46 +62,53 @@ export function App() {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   }, [setTheme]);
 
+  const handleToggleMonthlyView = useCallback(() => {
+    setIsMonthlyView((prev) => !prev);
+  }, []);
+
   return (
     <div className="app-root" data-theme={theme}>
       <div className="app-container">
-        {/* Header */}
+        {/* Header Component */}
         <Header
-          netBalance={summary.netBalance}
+          totalBalance={summary.netBalance}
           lastTransactionType={lastTransactionType}
           theme={theme}
           onToggleTheme={handleToggleTheme}
         />
 
         {/* 3-Column Summary Cards */}
-        <SummaryCards summary={summary} />
+        <SummaryCards
+          totalIncome={summary.totalIncome}
+          totalExpenses={summary.totalExpenses}
+          netBalance={summary.netBalance}
+        />
 
         {/* 2-Column Main Dashboard Layout */}
         <main className="dashboard-grid">
           {/* Left Column: Form & Category Chart */}
           <div className="dashboard-column left-column">
             <ExpenseForm
+              onSubmit={handleSaveExpense}
               editingExpense={editingExpense}
-              onSave={handleSaveExpense}
-              onCancel={handleCancelEdit}
+              onCancelEdit={handleCancelEdit}
             />
             <CategoryChart expenses={expenses} />
           </div>
 
-          {/* Right Column: Filter Bar & Table */}
+          {/* Right Column: Filter Bar & Expense Table */}
           <div className="dashboard-column right-column">
             <FilterBar
               filters={filters}
-              isFiltered={isFiltered}
               onFilterChange={setFilter}
               onClearFilters={clearFilters}
             />
             <ExpenseTable
               expenses={filteredExpenses}
-              isFiltered={isFiltered}
               onEdit={handleEditExpense}
               onDelete={handleDeleteExpense}
-              onClearFilters={clearFilters}
+              isMonthlyView={isMonthlyView}
+              onToggleMonthlyView={handleToggleMonthlyView}
             />
           </div>
         </main>

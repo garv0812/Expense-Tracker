@@ -1,12 +1,12 @@
 /* ==========================================================================
-   PERSONAL EXPENSE TRACKER - MAIN DESIGN SYSTEM (App.css)
+   PERSONAL EXPENSE TRACKER - PRODUCTION CSS DESIGN SYSTEM (App.css)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. CSS Custom Properties / Design Tokens
+   1. CSS Custom Properties / Design Tokens (:root & [data-theme="dark"])
    -------------------------------------------------------------------------- */
 :root {
-  /* Color Palette - Light Mode */
+  /* Color Palette - Light Theme */
   --bg-primary: #f8fafc;
   --bg-surface: #ffffff;
   --bg-surface-hover: #f1f5f9;
@@ -14,30 +14,23 @@
 
   --text-primary: #0f172a;
   --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-muted: #64748b;
 
   --border-color: #e2e8f0;
-  --border-focus: #6366f1;
+  --border-focus: #4f46e5;
 
-  /* Brand & Accent Colors */
+  --income-green: #2ecc71;
+  --expense-red: #e74c3c;
+
   --color-primary: #4f46e5;
   --color-primary-hover: #4338ca;
   --color-primary-light: #eef2ff;
 
   --color-income: #10b981;
-  --color-income-hover: #059669;
   --color-income-light: #ecfdf5;
 
   --color-expense: #f43f5e;
-  --color-expense-hover: #e11d48;
   --color-expense-light: #fff1f2;
-
-  --color-warning: #f59e0b;
-
-  /* Typography */
-  --font-family-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-family-title: 'Outfit', 'Inter', sans-serif;
-  --font-family-mono: 'JetBrains Mono', monospace;
 
   /* Category Specific Colors */
   --cat-salary: #10b981;
@@ -45,35 +38,36 @@
   --cat-investment: #8b5cf6;
   --cat-other-income: #3b82f6;
 
-  --cat-food: #f97316;
-  --cat-transport: #0284c7;
-  --cat-shopping: #ec4899;
-  --cat-entertainment: #a855f7;
-  --cat-bills: #ef4444;
-  --cat-health: #14b8a6;
-  --cat-education: #6366f1;
-  --cat-other: #64748b;
+  --cat-food: #e67e22;
+  --cat-transport: #2980b9;
+  --cat-shopping: #e84393;
+  --cat-entertainment: #9b59b6;
+  --cat-bills: #c0392b;
+  --cat-health: #16a085;
+  --cat-education: #34495e;
+  --cat-other: #7f8c8d;
 
-  /* Elevational Shadows & Effects */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-  --shadow-glow-income: 0 0 15px rgba(16, 185, 129, 0.35);
-  --shadow-glow-expense: 0 0 15px rgba(244, 63, 94, 0.35);
+  /* Typography */
+  --font-family-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-title: 'Outfit', 'Inter', sans-serif;
+  --font-family-mono: 'JetBrains Mono', monospace;
 
+  /* Radii & Shadows */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-full: 9999px;
 
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;
-  --transition-smooth: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-chart: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --------------------------------------------------------------------------
-   Dark Mode Custom Properties
-   -------------------------------------------------------------------------- */
+/* Dark Theme Tokens */
 [data-theme="dark"],
 html[data-theme="dark"],
 body[data-theme="dark"] {
@@ -90,8 +84,8 @@ body[data-theme="dark"] {
   --border-focus: #818cf8;
 
   --color-primary-light: rgba(99, 102, 241, 0.2);
-  --color-income-light: rgba(16, 185, 129, 0.2);
-  --color-expense-light: rgba(244, 63, 94, 0.2);
+  --color-income-light: rgba(46, 204, 113, 0.2);
+  --color-expense-light: rgba(231, 76, 60, 0.2);
 
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
   --shadow-md: 0 4px 10px -1px rgba(0, 0, 0, 0.6);
@@ -118,7 +112,6 @@ body {
   font-family: var(--font-family-body);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 .app-root {
@@ -128,7 +121,6 @@ body {
   padding: 1.5rem 1rem 3rem 1rem;
   transition: background-color var(--transition-normal), color var(--transition-normal);
 }
-
 
 .app-container {
   max-width: 1280px;
@@ -177,7 +169,6 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--text-primary);
 }
 
 .header-subtitle {
@@ -192,83 +183,58 @@ body {
   gap: 1rem;
 }
 
-.net-balance-chip {
+.balance-container {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: var(--radius-md);
   background-color: var(--bg-subtle);
   border: 1px solid var(--border-color);
-  transition: all var(--transition-fast);
 }
 
 .balance-label {
-  font-size: 0.6875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text-muted);
 }
 
-.balance-amount {
+.balance-amount-span {
   font-family: var(--font-family-mono);
   font-size: 1.125rem;
   font-weight: 700;
-  color: var(--text-primary);
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
 }
 
-.net-balance-chip[data-type="income"] .balance-amount {
-  color: var(--color-income);
+.balance-amount-span[data-type="income"] {
+  color: var(--income-green);
 }
 
-.net-balance-chip[data-type="expense"] .balance-amount {
-  color: var(--color-expense);
+.balance-amount-span[data-type="expense"] {
+  color: var(--expense-red);
 }
 
-/* Header Flash Keyframe Animations */
-.net-balance-chip.flash-income {
+/* Flash Animations driven by data-type attribute */
+.balance-amount-span.flash-active[data-type="income"] {
   animation: flashGreen 0.6s ease-in-out;
 }
 
-.net-balance-chip.flash-expense {
+.balance-amount-span.flash-active[data-type="expense"] {
   animation: flashRed 0.6s ease-in-out;
 }
 
 @keyframes flashGreen {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(16, 185, 129, 0);
-    background-color: var(--bg-subtle);
-  }
-  50% {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-glow-income);
-    background-color: var(--color-income-light);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(16, 185, 129, 0);
-    background-color: var(--bg-subtle);
-  }
+  0%   { background: transparent; }
+  30%  { background: rgba(46,204,113,0.3); }
+  100% { background: transparent; }
 }
 
 @keyframes flashRed {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(244, 63, 94, 0);
-    background-color: var(--bg-subtle);
-  }
-  50% {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-glow-expense);
-    background-color: var(--color-expense-light);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(244, 63, 94, 0);
-    background-color: var(--bg-subtle);
-  }
+  0%   { background: transparent; }
+  30%  { background: rgba(231,76,60,0.3); }
+  100% { background: transparent; }
 }
 
 .theme-toggle-btn {
@@ -291,7 +257,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   4. Summary Cards Grid
+   4. Summary Cards Grid (3 Equal Columns in CSS Grid Row)
    -------------------------------------------------------------------------- */
 .summary-grid {
   display: grid;
@@ -339,12 +305,12 @@ body {
 
 .income-icon {
   background-color: var(--color-income-light);
-  color: var(--color-income);
+  color: var(--income-green);
 }
 
 .expense-icon {
   background-color: var(--color-expense-light);
-  color: var(--color-expense);
+  color: var(--expense-red);
 }
 
 .net-icon {
@@ -364,15 +330,14 @@ body {
   font-family: var(--font-family-mono);
   font-size: 1.625rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
 }
 
 .card-amount.positive {
-  color: var(--color-income);
+  color: var(--income-green);
 }
 
 .card-amount.negative {
-  color: var(--color-expense);
+  color: var(--expense-red);
 }
 
 .card-badge {
@@ -384,16 +349,16 @@ body {
 
 .positive-badge {
   background-color: var(--color-income-light);
-  color: var(--color-income);
+  color: var(--income-green);
 }
 
 .negative-badge {
   background-color: var(--color-expense-light);
-  color: var(--color-expense);
+  color: var(--expense-red);
 }
 
 /* --------------------------------------------------------------------------
-   5. Dashboard Grid (2 Columns)
+   5. Dashboard Layout (2 Columns: Form+Chart Left, Filter+Table Right)
    -------------------------------------------------------------------------- */
 .dashboard-grid {
   display: grid;
@@ -443,12 +408,12 @@ body {
 
 .transaction-type-badge.income {
   background-color: var(--color-income-light);
-  color: var(--color-income);
+  color: var(--income-green);
 }
 
 .transaction-type-badge.expense {
   background-color: var(--color-expense-light);
-  color: var(--color-expense);
+  color: var(--expense-red);
 }
 
 .expense-form {
@@ -491,13 +456,13 @@ body {
 
 .form-group input.input-error,
 .form-group select.input-error {
-  border-color: var(--color-expense);
+  border-color: var(--expense-red);
   background-color: var(--color-expense-light);
 }
 
 .error-message {
   font-size: 0.75rem;
-  color: var(--color-expense);
+  color: var(--expense-red);
   font-weight: 500;
 }
 
@@ -524,7 +489,6 @@ body {
 .btn-primary {
   background-color: var(--color-primary);
   color: #ffffff;
-
   width: 100%;
 }
 
@@ -565,12 +529,14 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   7. Filter Bar Component
+   7. Filter Bar Component (Flexbox with flex-wrap and gap)
    -------------------------------------------------------------------------- */
 .filter-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-bottom: 1rem;
 }
 
@@ -587,21 +553,35 @@ body {
   font-weight: 700;
 }
 
+.filter-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.csv-export-btn {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
+}
+
 .clear-btn {
   font-size: 0.8125rem;
   font-weight: 600;
 }
 
-.filter-controls {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+.filter-controls-flex {
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.875rem;
 }
 
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
+.filter-controls-flex .filter-group {
+  flex: 1 1 180px;
+  min-width: 140px;
+}
+
+.filter-controls-flex .search-group {
+  flex: 2 1 220px;
 }
 
 .filter-group label {
@@ -646,7 +626,15 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-bottom: 1rem;
+}
+
+.table-header-titles {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .table-header h2 {
@@ -662,6 +650,11 @@ body {
   background-color: var(--bg-subtle);
   padding: 0.25rem 0.625rem;
   border-radius: var(--radius-full);
+}
+
+.view-toggle-btn {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
 }
 
 .table-responsive {
@@ -701,13 +694,13 @@ body {
   background-color: var(--bg-surface-hover);
 }
 
-/* Attribute Selectors for Transaction Types */
+/* Table Row Left Border via Attribute Selectors */
 tr[data-type="income"] {
-  border-left: 3px solid var(--color-income);
+  border-left: 3px solid var(--income-green);
 }
 
 tr[data-type="expense"] {
-  border-left: 3px solid var(--color-expense);
+  border-left: 3px solid var(--expense-red);
 }
 
 .date-cell {
@@ -721,19 +714,21 @@ tr[data-type="expense"] {
   color: var(--text-primary);
 }
 
+/* Amount Column: Text-align Right, Monospace Font */
 .amount-cell {
+  text-align: right;
   font-family: var(--font-family-mono);
   font-weight: 600;
   font-size: 0.9375rem;
   white-space: nowrap;
 }
 
-.amount-value.income {
-  color: var(--color-income);
+.amount-value.income, .amount-cell.positive {
+  color: var(--income-green);
 }
 
-.amount-value.expense {
-  color: var(--color-expense);
+.amount-value.expense, .amount-cell.negative {
+  color: var(--expense-red);
 }
 
 .text-right {
@@ -759,13 +754,14 @@ tr[data-type="expense"] {
   margin: 0 0.125rem;
 }
 
+/* Edit button blue hover, Delete button red hover */
 .edit-icon-btn:hover {
-  color: var(--color-primary);
-  background-color: var(--color-primary-light);
+  color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.15);
 }
 
 .delete-icon-btn:hover {
-  color: var(--color-expense);
+  color: var(--expense-red);
   background-color: var(--color-expense-light);
 }
 
@@ -791,23 +787,23 @@ tr[data-type="expense"] {
 }
 
 .summary-item.positive strong {
-  color: var(--color-income);
+  color: var(--income-green);
 }
 
 .summary-item.negative strong {
-  color: var(--color-expense);
+  color: var(--expense-red);
 }
 
 .summary-item.net.positive strong {
-  color: var(--color-income);
+  color: var(--income-green);
 }
 
 .summary-item.net.negative strong {
-  color: var(--color-expense);
+  color: var(--expense-red);
 }
 
 /* --------------------------------------------------------------------------
-   9. Category Badge Styling via Attribute Selectors
+   9. Category Badges - Defined via Attribute Selectors for EVERY Category
    -------------------------------------------------------------------------- */
 .category-badge {
   display: inline-block;
@@ -859,7 +855,7 @@ span[data-category="Other"], .chart-progress-fill[data-category="Other"] {
 }
 
 /* --------------------------------------------------------------------------
-   10. Category Chart Component
+   10. Category Chart Component (Transition: width 0.5s cubic-bezier(...))
    -------------------------------------------------------------------------- */
 .chart-header {
   display: flex;
@@ -936,7 +932,7 @@ span[data-category="Other"], .chart-progress-fill[data-category="Other"] {
   height: 100%;
   border-radius: var(--radius-full);
   width: 0%;
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition-chart);
 }
 
 /* --------------------------------------------------------------------------
@@ -947,41 +943,31 @@ span[data-category="Other"], .chart-progress-fill[data-category="Other"] {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem 1.5rem;
+  padding: 2.5rem 1rem;
   text-align: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .empty-state-icon {
   color: var(--text-muted);
-  margin-bottom: 0.5rem;
-}
-
-.empty-state-title {
-  font-family: var(--font-family-title);
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  margin-bottom: 0.25rem;
 }
 
 .empty-state-description {
   font-size: 0.875rem;
   color: var(--text-muted);
-  max-width: 360px;
+  font-weight: 500;
 }
 
 /* --------------------------------------------------------------------------
-   12. Responsive Breakpoints
+   12. Responsive Layout Rules (Single Column below 768px)
    -------------------------------------------------------------------------- */
-
-/* Tablet & Mobile Layout (< 992px) */
 @media (max-width: 992px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* Mobile Devices (< 768px) */
 @media (max-width: 768px) {
   .app-root {
     padding: 1rem 0.5rem;
@@ -991,7 +977,7 @@ span[data-category="Other"], .chart-progress-fill[data-category="Other"] {
     grid-template-columns: 1fr;
   }
 
-  .filter-controls {
+  .dashboard-grid {
     grid-template-columns: 1fr;
   }
 

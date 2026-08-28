@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect, useMemo } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 
 export const INCOME_CATEGORIES = ['Salary', 'Freelance', 'Investment', 'Other Income'];
@@ -11,57 +11,68 @@ export const deriveTransactionType = (category) => {
   return 'expense';
 };
 
-const INITIAL_EXPENSES = [];
-
+const initialReducerState = {
+  expenses: [],
+  editingId: null,
+  isEditing: false,
+  lastTransactionType: null
+};
 
 function expensesReducer(state, action) {
   switch (action.type) {
     case 'ADD_EXPENSE': {
-      const newType = action.payload.type || deriveTransactionType(action.payload.category);
+      const derivedType = action.payload.type || deriveTransactionType(action.payload.category);
       const newExpense = {
         ...action.payload,
-        id: action.payload.id || Date.now().toString(),
+        id: action.payload.id || Date.now(),
         amount: Number(action.payload.amount),
-        type: newType
+        type: derivedType
       };
       return {
         ...state,
         expenses: [newExpense, ...state.expenses],
-        lastTransactionType: newType
+        lastTransactionType: derivedType
       };
     }
     case 'UPDATE_EXPENSE': {
-      const updatedType = action.payload.type || deriveTransactionType(action.payload.category);
+      const derivedType = action.payload.type || deriveTransactionType(action.payload.category);
       const updatedExpense = {
         ...action.payload,
         amount: Number(action.payload.amount),
-        type: updatedType
+        type: derivedType
       };
       return {
         ...state,
         expenses: state.expenses.map((item) =>
           item.id === updatedExpense.id ? updatedExpense : item
         ),
-        editingExpense: null,
-        lastTransactionType: updatedType
+        editingId: null,
+        isEditing: false,
+        lastTransactionType: derivedType
       };
     }
     case 'DELETE_EXPENSE': {
       return {
         ...state,
-        expenses: state.expenses.filter((item) => item.id !== action.payload)
+        expenses: state.expenses.filter((item) => item.id !== action.payload),
+        editingId: state.editingId === action.payload ? null : state.editingId,
+        isEditing: state.editingId === action.payload ? false : state.isEditing
       };
     }
     case 'SET_EDITING': {
+      // payload can be either an expense object or an ID
+      const targetId = typeof action.payload === 'object' ? action.payload.id : action.payload;
       return {
         ...state,
-        editingExpense: action.payload
+        editingId: targetId,
+        isEditing: true
       };
     }
     case 'CLEAR_EDITING': {
       return {
         ...state,
-        editingExpense: null
+        editingId: null,
+        isEditing: false
       };
     }
     default:
@@ -70,22 +81,28 @@ function expensesReducer(state, action) {
 }
 
 export function useExpenses() {
-  const [persistedExpenses, setPersistedExpenses] = useLocalStorage('expenses', INITIAL_EXPENSES);
+  const [persistedExpenses, setPersistedExpenses] = useLocalStorage('expenses', []);
 
   const [state, dispatch] = useReducer(expensesReducer, {
-    expenses: persistedExpenses,
-    editingExpense: null,
-    lastTransactionType: null
+    ...initialReducerState,
+    expenses: persistedExpenses
   });
 
-  // Sync state.expenses changes to localStorage
+  // Sync expenses changes to localStorage
   useEffect(() => {
     setPersistedExpenses(state.expenses);
   }, [state.expenses, setPersistedExpenses]);
 
+  const editingExpense = useMemo(() => {
+    if (!state.editingId) return null;
+    return state.expenses.find((item) => item.id === state.editingId) || null;
+  }, [state.expenses, state.editingId]);
+
   return {
     expenses: state.expenses,
-    editingExpense: state.editingExpense,
+    editingId: state.editingId,
+    isEditing: state.isEditing,
+    editingExpense,
     lastTransactionType: state.lastTransactionType,
     dispatch
   };
