@@ -1,0 +1,1013 @@
+/* ==========================================================================
+   PERSONAL EXPENSE TRACKER - MAIN DESIGN SYSTEM (App.css)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS Custom Properties / Design Tokens
+   -------------------------------------------------------------------------- */
+:root {
+  /* Color Palette - Light Mode */
+  --bg-primary: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f1f5f9;
+  --bg-subtle: #f1f5f9;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  --border-color: #e2e8f0;
+  --border-focus: #6366f1;
+
+  /* Brand & Accent Colors */
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-primary-light: #eef2ff;
+
+  --color-income: #10b981;
+  --color-income-hover: #059669;
+  --color-income-light: #ecfdf5;
+
+  --color-expense: #f43f5e;
+  --color-expense-hover: #e11d48;
+  --color-expense-light: #fff1f2;
+
+  --color-warning: #f59e0b;
+
+  /* Typography */
+  --font-family-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-title: 'Outfit', 'Inter', sans-serif;
+  --font-family-mono: 'JetBrains Mono', monospace;
+
+  /* Category Specific Colors */
+  --cat-salary: #10b981;
+  --cat-freelance: #06b6d4;
+  --cat-investment: #8b5cf6;
+  --cat-other-income: #3b82f6;
+
+  --cat-food: #f97316;
+  --cat-transport: #0284c7;
+  --cat-shopping: #ec4899;
+  --cat-entertainment: #a855f7;
+  --cat-bills: #ef4444;
+  --cat-health: #14b8a6;
+  --cat-education: #6366f1;
+  --cat-other: #64748b;
+
+  /* Elevational Shadows & Effects */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-glow-income: 0 0 15px rgba(16, 185, 129, 0.35);
+  --shadow-glow-expense: 0 0 15px rgba(244, 63, 94, 0.35);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-smooth: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Dark Mode Custom Properties
+   -------------------------------------------------------------------------- */
+[data-theme="dark"],
+html[data-theme="dark"],
+body[data-theme="dark"] {
+  --bg-primary: #0b0f19;
+  --bg-surface: #161e2e;
+  --bg-surface-hover: #222d42;
+  --bg-subtle: #1e293b;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+
+  --border-color: #273549;
+  --border-focus: #818cf8;
+
+  --color-primary-light: rgba(99, 102, 241, 0.2);
+  --color-income-light: rgba(16, 185, 129, 0.2);
+  --color-expense-light: rgba(244, 63, 94, 0.2);
+
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 10px -1px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.7);
+}
+
+/* --------------------------------------------------------------------------
+   2. Global Reset & Base Styles
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+body {
+  font-family: var(--font-family-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app-root {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 1.5rem 1rem 3rem 1rem;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+
+.app-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   3. Header Component
+   -------------------------------------------------------------------------- */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.75rem;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.logo-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #4f46e5, #06b6d4);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+}
+
+.header-titles h1 {
+  font-family: var(--font-family-title);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.header-subtitle {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.net-balance-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.balance-label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.balance-amount {
+  font-family: var(--font-family-mono);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.net-balance-chip[data-type="income"] .balance-amount {
+  color: var(--color-income);
+}
+
+.net-balance-chip[data-type="expense"] .balance-amount {
+  color: var(--color-expense);
+}
+
+/* Header Flash Keyframe Animations */
+.net-balance-chip.flash-income {
+  animation: flashGreen 0.6s ease-in-out;
+}
+
+.net-balance-chip.flash-expense {
+  animation: flashRed 0.6s ease-in-out;
+}
+
+@keyframes flashGreen {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(16, 185, 129, 0);
+    background-color: var(--bg-subtle);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-glow-income);
+    background-color: var(--color-income-light);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(16, 185, 129, 0);
+    background-color: var(--bg-subtle);
+  }
+}
+
+@keyframes flashRed {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(244, 63, 94, 0);
+    background-color: var(--bg-subtle);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-glow-expense);
+    background-color: var(--color-expense-light);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(244, 63, 94, 0);
+    background-color: var(--bg-subtle);
+  }
+}
+
+.theme-toggle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--bg-subtle);
+  border-color: var(--border-focus);
+}
+
+/* --------------------------------------------------------------------------
+   4. Summary Cards Grid
+   -------------------------------------------------------------------------- */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.summary-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.income-icon {
+  background-color: var(--color-income-light);
+  color: var(--color-income);
+}
+
+.expense-icon {
+  background-color: var(--color-expense-light);
+  color: var(--color-expense);
+}
+
+.net-icon {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.card-amount {
+  font-family: var(--font-family-mono);
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.card-amount.positive {
+  color: var(--color-income);
+}
+
+.card-amount.negative {
+  color: var(--color-expense);
+}
+
+.card-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-full);
+}
+
+.positive-badge {
+  background-color: var(--color-income-light);
+  color: var(--color-income);
+}
+
+.negative-badge {
+  background-color: var(--color-expense-light);
+  color: var(--color-expense);
+}
+
+/* --------------------------------------------------------------------------
+   5. Dashboard Grid (2 Columns)
+   -------------------------------------------------------------------------- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.dashboard-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card-container {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* --------------------------------------------------------------------------
+   6. Expense Form Component
+   -------------------------------------------------------------------------- */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.form-header h2 {
+  font-family: var(--font-family-title);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.transaction-type-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.transaction-type-badge.income {
+  background-color: var(--color-income-light);
+  color: var(--color-income);
+}
+
+.transaction-type-badge.expense {
+  background-color: var(--color-expense-light);
+  color: var(--color-expense);
+}
+
+.expense-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.form-group label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-family-body);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.form-group input.input-error,
+.form-group select.input-error {
+  border-color: var(--color-expense);
+  background-color: var(--color-expense-light);
+}
+
+.error-message {
+  font-size: 0.75rem;
+  color: var(--color-expense);
+  font-weight: 500;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* Button System */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+}
+
+.btn-secondary {
+  background-color: var(--bg-subtle);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-surface-hover);
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  padding: 0.25rem 0.5rem;
+}
+
+.btn-text:hover {
+  text-decoration: underline;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.btn-outline:hover {
+  background-color: var(--bg-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   7. Filter Bar Component
+   -------------------------------------------------------------------------- */
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.filter-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+}
+
+.filter-title h3 {
+  font-family: var(--font-family-title);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.clear-btn {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.filter-controls {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 0.875rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.filter-group label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.search-input-wrapper input {
+  padding-left: 2.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   8. Expense Table Component
+   -------------------------------------------------------------------------- */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.table-header h2 {
+  font-family: var(--font-family-title);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.row-count-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background-color: var(--bg-subtle);
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-full);
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.expense-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.expense-table th {
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--border-color);
+  background-color: var(--bg-surface);
+}
+
+.expense-table td {
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.expense-table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.expense-table tbody tr:hover {
+  background-color: var(--bg-surface-hover);
+}
+
+/* Attribute Selectors for Transaction Types */
+tr[data-type="income"] {
+  border-left: 3px solid var(--color-income);
+}
+
+tr[data-type="expense"] {
+  border-left: 3px solid var(--color-expense);
+}
+
+.date-cell {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.desc-cell {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.amount-cell {
+  font-family: var(--font-family-mono);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+
+.amount-value.income {
+  color: var(--color-income);
+}
+
+.amount-value.expense {
+  color: var(--color-expense);
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.actions-cell {
+  white-space: nowrap;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.375rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  margin: 0 0.125rem;
+}
+
+.edit-icon-btn:hover {
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.delete-icon-btn:hover {
+  color: var(--color-expense);
+  background-color: var(--color-expense-light);
+}
+
+/* Table Footer Summary */
+.expense-table tfoot td {
+  border-top: 2px solid var(--border-color);
+  background-color: var(--bg-subtle);
+}
+
+.tfoot-row .tfoot-label {
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.tfoot-summary-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  font-size: 0.8125rem;
+  font-family: var(--font-family-mono);
+}
+
+.summary-item.positive strong {
+  color: var(--color-income);
+}
+
+.summary-item.negative strong {
+  color: var(--color-expense);
+}
+
+.summary-item.net.positive strong {
+  color: var(--color-income);
+}
+
+.summary-item.net.negative strong {
+  color: var(--color-expense);
+}
+
+/* --------------------------------------------------------------------------
+   9. Category Badge Styling via Attribute Selectors
+   -------------------------------------------------------------------------- */
+.category-badge {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  color: #ffffff;
+}
+
+/* Income Categories */
+span[data-category="Salary"], .chart-progress-fill[data-category="Salary"] {
+  background-color: var(--cat-salary);
+}
+span[data-category="Freelance"], .chart-progress-fill[data-category="Freelance"] {
+  background-color: var(--cat-freelance);
+}
+span[data-category="Investment"], .chart-progress-fill[data-category="Investment"] {
+  background-color: var(--cat-investment);
+}
+span[data-category="Other Income"], .chart-progress-fill[data-category="Other Income"] {
+  background-color: var(--cat-other-income);
+}
+
+/* Expense Categories */
+span[data-category="Food"], .chart-progress-fill[data-category="Food"] {
+  background-color: var(--cat-food);
+}
+span[data-category="Transport"], .chart-progress-fill[data-category="Transport"] {
+  background-color: var(--cat-transport);
+}
+span[data-category="Shopping"], .chart-progress-fill[data-category="Shopping"] {
+  background-color: var(--cat-shopping);
+}
+span[data-category="Entertainment"], .chart-progress-fill[data-category="Entertainment"] {
+  background-color: var(--cat-entertainment);
+}
+span[data-category="Bills"], .chart-progress-fill[data-category="Bills"] {
+  background-color: var(--cat-bills);
+}
+span[data-category="Health"], .chart-progress-fill[data-category="Health"] {
+  background-color: var(--cat-health);
+}
+span[data-category="Education"], .chart-progress-fill[data-category="Education"] {
+  background-color: var(--cat-education);
+}
+span[data-category="Other"], .chart-progress-fill[data-category="Other"] {
+  background-color: var(--cat-other);
+}
+
+/* --------------------------------------------------------------------------
+   10. Category Chart Component
+   -------------------------------------------------------------------------- */
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.25rem;
+}
+
+.chart-header h2 {
+  font-family: var(--font-family-title);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.chart-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.chart-empty {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.chart-bars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.chart-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.chart-bar-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chart-bar-values {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.8125rem;
+}
+
+.chart-amount {
+  font-family: var(--font-family-mono);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.chart-percent {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.chart-progress-track {
+  width: 100%;
+  height: 8px;
+  background-color: var(--bg-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.chart-progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  width: 0%;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --------------------------------------------------------------------------
+   11. Empty State Component
+   -------------------------------------------------------------------------- */
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.empty-state-icon {
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-title {
+  font-family: var(--font-family-title);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.empty-state-description {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  max-width: 360px;
+}
+
+/* --------------------------------------------------------------------------
+   12. Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+
+/* Tablet & Mobile Layout (< 992px) */
+@media (max-width: 992px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile Devices (< 768px) */
+@media (max-width: 768px) {
+  .app-root {
+    padding: 1rem 0.5rem;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tfoot-summary-group {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.375rem;
+  }
+}
